@@ -1,0 +1,61 @@
+cmake_minimum_required(VERSION 3.20)
+project(GradeConverter VERSION 1.0 LANGUAGES CXX C)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Force MSVC à lier la librairie standard statiquement pour TOUS les sous-projets (y compris GLFW)
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
+
+include(FetchContent)
+
+# 1. Récupération de GLFW
+FetchContent_Declare(glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw.git
+    GIT_TAG 3.4
+)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(glfw)
+
+# 2. Récupération de Dear ImGui
+FetchContent_Declare(imgui
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG v1.90.9
+)
+FetchContent_MakeAvailable(imgui)
+set(IMGUI_DIR ${imgui_SOURCE_DIR})
+
+set(IMGUI_SOURCES
+    ${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_tables.cpp
+    ${IMGUI_DIR}/imgui_widgets.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
+)
+
+add_executable(GradeConverter WIN32 main.cpp ${IMGUI_SOURCES})
+
+target_include_directories(GradeConverter PRIVATE 
+    ${IMGUI_DIR} 
+    ${IMGUI_DIR}/backends
+)
+
+target_link_libraries(GradeConverter PRIVATE glfw)
+
+# 3. Édition des liens
+if(WIN32)
+    target_link_libraries(GradeConverter PRIVATE opengl32)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_link_options(GradeConverter PRIVATE -static -static-libgcc -static-libstdc++)
+    endif()
+elseif(APPLE)
+    target_link_libraries(GradeConverter PRIVATE "-framework OpenGL")
+else()
+    find_package(OpenGL REQUIRED)
+    target_link_libraries(GradeConverter PRIVATE OpenGL::GL)
+endif()
