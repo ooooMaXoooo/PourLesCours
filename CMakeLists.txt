@@ -37,8 +37,8 @@ set(IMGUI_SOURCES
     ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
     ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
 
-    "./src/features/note_converter/NoteConverter.cpp"
     "./src/App.cpp"
+    "./src/features/note_converter/NoteConverter.cpp"
 )
 
 add_executable(GradeConverter WIN32 main.cpp ${IMGUI_SOURCES})
