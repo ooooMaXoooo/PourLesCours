@@ -12,7 +12,7 @@ NoteConverter::NoteConverter() {
 }
 
 void NoteConverter::draw_IMGui() {
-    ImGui::TextDisabled("🎓 Convertisseur de notes");
+    ImGui::TextDisabled("Convertisseur de notes");
     ImGui::Separator();
     ImGui::Spacing();
 

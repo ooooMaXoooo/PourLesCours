@@ -38,7 +38,12 @@ set(IMGUI_SOURCES
     ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
 
     "./src/App.cpp"
+
     "./src/features/note_converter/NoteConverter.cpp"
+    "./src/features/student_ranking/StudentRanking.cpp"
+
+    "./src/dataclasses/Class.cpp"
+    "./src/dataclasses/Student.cpp"
 )
 
 add_executable(GradeConverter WIN32 main.cpp ${IMGUI_SOURCES})
