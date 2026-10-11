@@ -1,14 +1,19 @@
 #pragma once
 
+#include <string>
+
 class Student {
 public:
-    Student(const char* lastname, const char* firstname);
+    Student(std::string lastname, std::string firstname);
 
-    const char *get_full_name() const;
-    const char *get_fist_name() const;
-    const char *get_last_name() const;
+    std::string get_full_name() const;
+    std::string get_fist_name() const;
+    std::string get_last_name() const;
+
+    void set_firstname(std::string name);
+    void set_lastname(std::string name);
 
 private:
-    const char *m_lastname;
-    const char *m_firstname;
+    std::string m_lastname;
+    std::string m_firstname;
 };

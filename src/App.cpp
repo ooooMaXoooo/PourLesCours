@@ -4,8 +4,8 @@
 
 #include <features/note_converter/NoteConverter.hpp>
 
-App::App() : m_io(nullptr) {
-    if(!glfw_init()) std::exit(1);
+App::App(int width, int height) : m_io(nullptr) {
+    if(!glfw_init(width, height)) std::exit(1);
     imgui_init();
     imgui_settings();
 }
@@ -42,14 +42,14 @@ void App::reserve_features(size_t size) {
     m_features.reserve(size);
 }
 
-bool App::glfw_init() {
+bool App::glfw_init(int width, int height) {
     if (!glfwInit())
         return 1;
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-    m_window = glfwCreateWindow(450, 320, "Convertisseur de Notes", nullptr, nullptr);
+    m_window = glfwCreateWindow(width, height, "Convertisseur de Notes", nullptr, nullptr);
     if (!m_window)
         return 1;
     glfwMakeContextCurrent(m_window);

@@ -18,7 +18,7 @@
 
 class App {
 public :
-    App();
+    App(int width, int height);
     ~App();
 
     /// @brief Lance l'application. Assurez-vous d'avoir ajouté au moins une foctionnalitée avant de la lancer . (à check)
@@ -46,7 +46,7 @@ private:
     std::vector<std::unique_ptr<Feature>> m_features;
 
 private:    
-    bool glfw_init();
+    bool glfw_init(int width, int height);
     void imgui_init();
     void imgui_settings();
 

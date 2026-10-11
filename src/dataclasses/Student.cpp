@@ -1,20 +1,28 @@
 #include <dataclasses/Student.hpp>
 
-#include <string>
+#include <utility>
 
-Student::Student(const char *lastname, const char *firstname) : m_lastname(lastname), m_firstname(firstname) {
+Student::Student(std::string lastname, std::string firstname) : m_lastname(std::move(lastname)), m_firstname(std::move(firstname)) {
 
 }
 
-const char *Student::get_full_name() const {
-    return (std::string(get_last_name()) + std::string(" ") + std::string(get_fist_name())).c_str();
+std::string Student::get_full_name() const {
+    return (m_lastname + std::string(" ") + m_firstname);
 }
 
-const char *Student::get_fist_name() const {
+std::string Student::get_fist_name() const {
     return m_firstname;
 }
 
-const char *Student::get_last_name() const
+std::string Student::get_last_name() const
 {
     return m_lastname;
+}
+
+void Student::set_firstname(std::string name) {
+    m_firstname = std::move(name);
+}
+
+void Student::set_lastname(std::string name) {
+    m_lastname = std::move(name);
 }
