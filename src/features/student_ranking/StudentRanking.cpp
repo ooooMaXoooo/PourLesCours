@@ -96,7 +96,8 @@ void StudentRanking::draw_classes_header()
     */
 
     ImGui::TableNextColumn();
-    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Elève");
+    if (m_classes.size() == 0) ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Elève - 0");
+    else ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Elève %d", m_classes[m_current_class].size());
 
     ImGui::TableNextColumn();
     ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Points");
@@ -256,7 +257,7 @@ void StudentRanking::draw_class_students_editor(std::function<void(size_t)> supp
         // 1. Déclarer la première ligne et la première colonne pour le titre
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Elèves");
+        ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Elèves %d", m_build_class__students_firstname.size());
 
         // 2. Boucle des élèves
         for(size_t i = 0; i < m_build_class__students_lastname.size(); i++) {
