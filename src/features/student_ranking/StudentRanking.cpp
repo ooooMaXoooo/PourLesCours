@@ -400,7 +400,7 @@ void StudentRanking::sync_class_attributes() {
 
     std::string name = m_classes[m_current_class].get_name();
     for(size_t i=0; i<name.size(); i++) m_build_class__name[i] = name[i];
-    name[name.size()] = '\0';
+    m_build_class__name[name.size()] = '\0';
     
     m_build_class__seuil = m_classes[m_current_class].get_seuil();
 
