@@ -38,6 +38,8 @@ private:
     Class m_editor__anterior_class;
     int m_editor__current_class = 0;
 
+    bool m_highlight_students = false;
+
 private :
     void draw_class_selector();
     void draw_classes_header();

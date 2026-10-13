@@ -131,6 +131,9 @@ void StudentRanking::draw_class_selector() {
 
     // aspect visuel de confirmation UI (bon pour l'UX ?)
     ImGui::Text("Classe %s", m_classes.size() == 0 ? "None" : names[m_current_class]);
+    ImGui::SameLine();
+    ImGui::Checkbox("seuil", &m_highlight_students);
+
     ImGui::Spacing();
 }
 
@@ -142,8 +145,8 @@ void StudentRanking::draw_classes_header()
     */
 
     ImGui::TableNextColumn();
-    if (m_classes.size() == 0) ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Elève - 0");
-    else ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Elève %d", m_classes[m_current_class].size());
+    if (m_classes.size() == 0) ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "0 Elève");
+    else ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "%d Elève(s)", m_classes[m_current_class].size());
 
     ImGui::TableNextColumn();
     ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Points");
@@ -160,6 +163,17 @@ void StudentRanking::draw_students_info(int class_idx) {
             ImGui::PushID(static_cast<int>(i));
 
             ImGui::TableNextRow();
+            if (m_highlight_students && c.get_student_point(i) >= c.get_seuil()) { // on surligne la ligne si l'élève a atteint le seuil.
+                // ImGui attend une couleur encodée en 32 bits (ImU32) pour les tableaux
+                // On convertit un ImVec4 (RGBA) en ImU32. 
+                // L'opacité (alpha) est le 4ème paramètre. 0.3f donne un fond coloré léger.
+                ImU32 highlight_color = ImGui::GetColorU32(ImVec4(0.2f, 0.7f, 0.2f, 0.3f)); // Vert transparent
+                
+                // Applique la couleur à toute la ligne courante
+                ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg0, highlight_color);
+            }
+
+
             ImGui::TableNextColumn();
             ImGui::TextUnformatted(c.get_student(i).get_full_name().c_str());
 
@@ -303,7 +317,7 @@ void StudentRanking::draw_class_students_editor(std::function<void(size_t)> supp
         // 1. Déclarer la première ligne et la première colonne pour le titre
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Elèves %d", m_build_class__students_firstname.size());
+        ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "%d Elève(s)", m_build_class__students_firstname.size());
 
         // 2. Boucle des élèves
         for(size_t i = 0; i < m_build_class__students_lastname.size(); i++) {
