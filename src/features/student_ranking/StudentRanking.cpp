@@ -1,10 +1,56 @@
+#ifdef _WIN32
+#include <windows.h> // pour utiliser MessageBoxA si besoin
+#endif
+
 #include <features/student_ranking/StudentRanking.hpp>
 #include <dataclasses/Student.hpp>
+
+#include <filesystem>
+#include <fstream>
+
+
+
+#include <iostream>
 
 StudentRanking::StudentRanking()
     : m_editor__anterior_class("", 0.0f, 0.0f, 0.0f, 0.0f, 0)
 {
     m_build_class__name[0] = '\0';
+
+    // création du chemin d'accès aux données de classes si il n'existe pas encore.
+    const std::filesystem::path data_directory = "data"; 
+    const std::filesystem::path data_path = data_directory / "classes.dat";
+
+    std::filesystem::create_directories(data_directory);
+
+    // lectures des classes existantes
+    std::ifstream file(data_path, std::ios::binary);
+    if (file.is_open()) {
+        size_t nb_classes = 0;
+        file.read(reinterpret_cast<char*>(&nb_classes), sizeof(nb_classes));
+        m_classes.clear();
+        for (size_t i = 0; i < nb_classes; ++i) {
+            Class c("", 0, 0, 0, 0, 0); 
+            c.load(file);
+            m_classes.push_back(std::move(c));
+        }
+        file.close();
+    }
+}
+
+StudentRanking::~StudentRanking() {
+    const std::filesystem::path data_directory = "data"; 
+    const std::filesystem::path data_path = data_directory / "classes.dat";
+
+    std::ofstream file(data_path, std::ios::binary | std::ios::trunc);
+    if (file.is_open()) {
+        size_t nb_classes = m_classes.size();
+        file.write(reinterpret_cast<const char*>(&nb_classes), sizeof(nb_classes));
+        for (const auto& c : m_classes) {
+            c.save(file);
+        }
+        file.close();
+    }
 }
 
 void StudentRanking::draw_IMGui() {

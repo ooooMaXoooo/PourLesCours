@@ -11,7 +11,10 @@
 *.vsix
 
 # Build folder
-build/*
+build
 
 # Configuration files
 imgui.ini
+
+#data files
+data

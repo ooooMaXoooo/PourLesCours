@@ -17,4 +17,6 @@ int main()
     }
 
     app.launch();
+
+    return 0;
 }

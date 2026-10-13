@@ -7,6 +7,7 @@
 class Feature {
 public :
     Feature() {}
+    virtual ~Feature() = default;
 
     virtual void draw_IMGui() = 0;
 };

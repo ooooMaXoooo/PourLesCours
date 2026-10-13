@@ -11,6 +11,7 @@
 class StudentRanking : public Feature {
 public:
     StudentRanking();
+    virtual ~StudentRanking();
 
     void draw_IMGui() override;
 
