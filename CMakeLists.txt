@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(GradeConverter VERSION 1.0 LANGUAGES CXX C)
+project(PourLesCours VERSION 1.0 LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -46,26 +46,26 @@ set(IMGUI_SOURCES
     "./src/dataclasses/Student.cpp"
 )
 
-add_executable(GradeConverter WIN32 main.cpp ${IMGUI_SOURCES})
+add_executable(PourLesCours WIN32 main.cpp ${IMGUI_SOURCES})
 
-target_include_directories(GradeConverter PRIVATE 
+target_include_directories(PourLesCours PRIVATE 
     ${IMGUI_DIR} 
     ${IMGUI_DIR}/backends
 
     "./include"
 )
 
-target_link_libraries(GradeConverter PRIVATE glfw)
+target_link_libraries(PourLesCours PRIVATE glfw)
 
 # 3. Édition des liens
 if(WIN32)
-    target_link_libraries(GradeConverter PRIVATE opengl32)
+    target_link_libraries(PourLesCours PRIVATE opengl32)
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-        target_link_options(GradeConverter PRIVATE -static -static-libgcc -static-libstdc++)
+        target_link_options(PourLesCours PRIVATE -static -static-libgcc -static-libstdc++)
     endif()
 elseif(APPLE)
-    target_link_libraries(GradeConverter PRIVATE "-framework OpenGL")
+    target_link_libraries(PourLesCours PRIVATE "-framework OpenGL")
 else()
     find_package(OpenGL REQUIRED)
-    target_link_libraries(GradeConverter PRIVATE OpenGL::GL)
+    target_link_libraries(PourLesCours PRIVATE OpenGL::GL)
 endif()
