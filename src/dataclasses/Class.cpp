@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <stdexcept>
+#include <IO/binary_io.h>
 
 Class::Class(std::string name, float bonus_value, float high_malus_value, float low_malus_value, float seuil, size_t size) : 
     m_name(std::move(name)),
@@ -31,6 +32,49 @@ void Class::clear() {
     m_students.clear();
     m_points.clear();
     m_point_increments.clear();
+}
+
+void Class::reserve(size_t capacity) {
+    m_students.reserve(capacity);
+    m_points.reserve(capacity);
+    m_point_increments.reserve(capacity);
+}
+
+void Class::save(std::ofstream& out) const {
+    write_string(out, m_name);
+    out.write(reinterpret_cast<const char*>(&m_bonus_value), sizeof(m_bonus_value));
+    out.write(reinterpret_cast<const char*>(&m_high_malus_value), sizeof(m_high_malus_value));
+    out.write(reinterpret_cast<const char*>(&m_low_malus_value), sizeof(m_low_malus_value));
+    out.write(reinterpret_cast<const char*>(&m_seuil), sizeof(m_seuil));
+
+    // Sauvegarde du vecteur d'élèves avec leur points
+    size_t nb_students = m_students.size();
+    out.write(reinterpret_cast<const char*>(&nb_students), sizeof(nb_students));
+    for(size_t i=0; i<m_students.size(); i++) {
+        const Student& student = m_students[i];
+        student.save(out, m_points[i]);
+    }
+}
+
+void Class::load(std::ifstream& in) {
+    m_name = read_string(in);
+    in.read(reinterpret_cast<char*>(&m_bonus_value), sizeof(m_bonus_value));
+    in.read(reinterpret_cast<char*>(&m_high_malus_value), sizeof(m_high_malus_value));
+    in.read(reinterpret_cast<char*>(&m_low_malus_value), sizeof(m_low_malus_value));
+    in.read(reinterpret_cast<char*>(&m_seuil), sizeof(m_seuil));
+
+    // Chargement du vecteur d'élèves
+    size_t nb_students = 0;
+    in.read(reinterpret_cast<char*>(&nb_students), sizeof(nb_students));
+    m_students.clear();
+    this->reserve(nb_students);
+    for (size_t i = 0; i < nb_students; ++i) {
+        Student s("", ""); // Création d'un élève vide
+        float points = s.load(in);        // Remplissage via le fichier
+        m_students.push_back(std::move(s));
+        m_points.push_back(points);
+        m_point_increments.push_back(1.0f);
+    }
 }
 
 void Class::add_student(Student s) {

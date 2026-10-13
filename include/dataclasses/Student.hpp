@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <fstream>
 
 class Student {
 public:
@@ -12,6 +13,9 @@ public:
 
     void set_firstname(std::string name);
     void set_lastname(std::string name);
+
+    void save(std::ofstream& out, float points) const;
+    float load(std::ifstream& in);
 
 private:
     std::string m_lastname;

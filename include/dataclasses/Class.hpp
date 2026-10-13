@@ -12,6 +12,10 @@ public :
     std::string get_name() const;
     const char* get_name_c_str() const;
     void clear();
+    void reserve(size_t capacity);
+
+    void save(std::ofstream& out) const;
+    void load(std::ifstream& in);
 
     void add_student(Student s);
     void remove_student(size_t index);
