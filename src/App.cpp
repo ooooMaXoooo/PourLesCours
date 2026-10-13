@@ -1,7 +1,10 @@
 #include "App.hpp"
 
-#include <cstdlib>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
+#include <cstdlib>
+#include <iostream>
 #include <features/note_converter/NoteConverter.hpp>
 
 App::App(int width, int height) : m_io(nullptr) {
@@ -54,6 +57,23 @@ bool App::glfw_init(int width, int height) {
         return 1;
     glfwMakeContextCurrent(m_window);
     glfwSwapInterval(1); // VSync actif
+
+    // icone
+    const char* icon_path = "assets/logo.png"; 
+
+    GLFWimage images[1];
+    // Le "4" force le chargement en format RGBA (Red Green Blue Alpha)
+    images[0].pixels = stbi_load(icon_path, &images[0].width, &images[0].height, 0, 4);
+
+    if (images[0].pixels) {
+        // Si l'image est bien chargée, on l'applique à la fenêtre
+        glfwSetWindowIcon(m_window, 1, images);
+
+        // On libère la mémoire immédiatement, GLFW en a fait une copie interne
+        stbi_image_free(images[0].pixels);
+    } else {
+        std::cout << "Attention: Impossible de charger l'icone GLFW\n";
+    }
 
     return true;
 }

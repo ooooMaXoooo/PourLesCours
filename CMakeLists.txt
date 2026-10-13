@@ -46,7 +46,11 @@ set(IMGUI_SOURCES
     "./src/dataclasses/Student.cpp"
 )
 
-add_executable(PourLesCours WIN32 main.cpp ${IMGUI_SOURCES})
+if(WIN32)
+    set(RESOURCE_FILES app_icon.rc)
+endif()
+
+add_executable(PourLesCours WIN32 main.cpp ${IMGUI_SOURCES} ${RESOURCE_FILES})
 
 target_include_directories(PourLesCours PRIVATE 
     ${IMGUI_DIR} 
