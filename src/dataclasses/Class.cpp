@@ -68,13 +68,13 @@ void Class::sort_by_firstname(bool ascendent) {
 
 void Class::sort_by_points(bool ascendent) {
     if (ascendent) {
-        [this](size_t a, size_t b) {
+        apply_sort([this](size_t a, size_t b) {
             return m_points[a] < m_points[b]; 
-        };
+        });
     } else {
-        [this](size_t a, size_t b) {
+        apply_sort([this](size_t a, size_t b) {
             return m_points[a] > m_points[b]; 
-        };
+        });
     }
 }
 
