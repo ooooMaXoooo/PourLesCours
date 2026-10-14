@@ -51,7 +51,7 @@ public :
     float get_low_malus_value() const { return m_low_malus_value; }
     float get_seuil() const { return m_seuil; }
 
-    std::string get_student_firstname(size_t index) const {return m_students[index].get_fist_name();}
+    std::string get_student_firstname(size_t index) const {return m_students[index].get_first_name();}
     std::string get_student_lastname(size_t index) const {return m_students[index].get_last_name();}
 
 private:
