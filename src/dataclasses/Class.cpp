@@ -2,6 +2,8 @@
 
 #include <utility>
 #include <stdexcept>
+#include <algorithm> // pour std::sort
+#include <numeric> // pour std::iota
 #include <IO/binary_io.h>
 
 Class::Class(std::string name, float bonus_value, float high_malus_value, float low_malus_value, float seuil, size_t size) : 
@@ -38,6 +40,42 @@ void Class::reserve(size_t capacity) {
     m_students.reserve(capacity);
     m_points.reserve(capacity);
     m_point_increments.reserve(capacity);
+}
+
+void Class::sort_by_lastname(bool ascendent) {
+    if (ascendent) {
+        apply_sort([this](size_t a, size_t b) {
+            return m_students[a].get_last_name() < m_students[b].get_last_name();
+        });
+    } else {
+        apply_sort([this](size_t a, size_t b) {
+            return m_students[a].get_last_name() > m_students[b].get_last_name();
+        });
+    }
+}
+
+void Class::sort_by_firstname(bool ascendent) {
+    if (ascendent) {
+        apply_sort([this](size_t a, size_t b) {
+            return m_students[a].get_first_name() < m_students[b].get_first_name();
+        });
+    } else {
+        apply_sort([this](size_t a, size_t b) {
+            return m_students[a].get_first_name() > m_students[b].get_first_name();
+        });
+    }
+}
+
+void Class::sort_by_points(bool ascendent) {
+    if (ascendent) {
+        [this](size_t a, size_t b) {
+            return m_points[a] < m_points[b]; 
+        };
+    } else {
+        [this](size_t a, size_t b) {
+            return m_points[a] > m_points[b]; 
+        };
+    }
 }
 
 void Class::save(std::ofstream& out) const {
@@ -136,4 +174,34 @@ float *Class::get_student_point_increment(size_t index) {
         throw std::invalid_argument("l'étudiant demandé n'existe pas ! (student_index trop grand)");
 
     return &(m_point_increments[index]);
+}
+
+void Class::apply_sort(const std::function<bool(size_t, size_t)>& less_than) {
+    if (m_students.empty()) return;
+
+    // 1. Créer un tableau contenant 0, 1, 2, ..., N-1
+    std::vector<size_t> indices(m_students.size());
+    std::iota(indices.begin(), indices.end(), 0);
+
+    // 2. Trier ces indices en utilisant ta fonction de comparaison
+    std::sort(indices.begin(), indices.end(), less_than);
+
+    // 3. Créer de nouveaux tableaux pour recevoir les données triées
+    std::vector<Student> sorted_students;
+    std::vector<float> sorted_points;
+    
+    // Optimisation : réserver la mémoire à l'avance
+    sorted_students.reserve(m_students.size());
+    sorted_points.reserve(m_points.size());
+
+    // 4. Appliquer le nouvel ordre
+    for (size_t idx : indices) {
+        // std::move évite de copier les std::string, c'est très performant
+        sorted_students.push_back(std::move(m_students[idx]));
+        sorted_points.push_back(std::move(m_points[idx]));
+    }
+
+    // 5. Remplacer les anciens tableaux par les nouveaux
+    m_students = std::move(sorted_students);
+    m_points = std::move(sorted_points);
 }

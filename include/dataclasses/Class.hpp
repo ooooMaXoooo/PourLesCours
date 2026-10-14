@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <functional>
 #include <dataclasses/Student.hpp>
 
 class Class {
@@ -13,6 +14,10 @@ public :
     const char* get_name_c_str() const;
     void clear();
     void reserve(size_t capacity);
+
+    void sort_by_lastname(bool ascendent=true);
+    void sort_by_firstname(bool ascendent=true);
+    void sort_by_points(bool ascendent=true);
 
     void save(std::ofstream& out) const;
     void load(std::ifstream& in);
@@ -61,4 +66,10 @@ private:
     float m_low_malus_value;
 
     float m_seuil;
+
+private :
+
+    /// @brief Sort the array m_student with respect to the function less_than
+    /// @param less_than A function that takes 2 indices `i1` and `i2` as inputs and returns true iff `m_student[i1] <= m_students[i2]`
+    void apply_sort(const std::function<bool(size_t, size_t)>& less_than);
 };
