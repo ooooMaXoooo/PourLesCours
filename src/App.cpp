@@ -52,7 +52,11 @@ bool App::glfw_init(int width, int height) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-    m_window = glfwCreateWindow(width, height, "Convertisseur de Notes", nullptr, nullptr);
+    #ifndef APP_NAME
+    #define APP_NAME "Mon Application" // Sécurité si la compilation CMake échoue
+    #endif
+
+    m_window = glfwCreateWindow(width, height, APP_NAME, nullptr, nullptr);
     if (!m_window)
         return 1;
     glfwMakeContextCurrent(m_window);

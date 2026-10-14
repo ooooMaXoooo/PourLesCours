@@ -52,6 +52,9 @@ endif()
 
 add_executable(PourLesCours WIN32 main.cpp ${IMGUI_SOURCES} ${RESOURCE_FILES})
 
+# Passe le nom du projet défini par la commande project() au code C++
+target_compile_definitions(PourLesCours PRIVATE APP_NAME="${PROJECT_NAME}")
+
 target_include_directories(PourLesCours PRIVATE 
     ${IMGUI_DIR} 
     ${IMGUI_DIR}/backends
