@@ -40,6 +40,16 @@ private:
 
     bool m_highlight_students = false;
 
+    enum SortMode {
+        Sort_None,
+        Sort_Lastname,
+        Sort_Firstname,
+        Sort_Points
+    };
+
+    SortMode m_sort_mode = Sort_None;
+    bool m_sort_asc = true; // true = croissant, false = décroissant
+
 private :
     void draw_class_selector();
     void draw_classes_header();

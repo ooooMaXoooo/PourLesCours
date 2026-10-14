@@ -67,21 +67,13 @@ void StudentRanking::draw_IMGui() {
     // Encart de résultats stylisé
     ImGui::BeginChild("Resultats", ImVec2(0, 0.95 * size.y), true);
 
-
+    static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
     constexpr int N_Cols = 2;
-    ImGui::BeginTable("str_id", N_Cols);
-    /* 2 colonnes :
-    • Nom élève
-    • Points
-    */
-
-    draw_classes_header();
-    ImGui::TableNextRow();
-
-    // affichage des élèves
-    draw_students_info(m_current_class);
-
-    ImGui::EndTable();
+    if(ImGui::BeginTable("str_id", N_Cols, flags)) {
+        draw_classes_header();
+        draw_students_info(m_current_class);
+        ImGui::EndTable();
+    }
     ImGui::EndChild();
 }
 
@@ -139,17 +131,64 @@ void StudentRanking::draw_class_selector() {
 
 void StudentRanking::draw_classes_header()
 {
-    /* 2 colonnes :
-    • Nom élève
-    • Points
-    */
+    Class& current_class = m_classes[m_current_class];
 
-    ImGui::TableNextColumn();
-    if (m_classes.size() == 0) ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "0 Elève");
-    else ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "%d Elève(s)", m_classes[m_current_class].size());
+    // 1. Déclarer explicitement que cette ligne est un en-tête (pour la couleur de fond)
+    ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
 
+    // --- COLONNE 1 : Les Élèves (et les boutons Nom/Prénom) ---
     ImGui::TableNextColumn();
-    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Points");
+    
+    // Petit compteur discret
+    ImGui::TextDisabled("%d Élève(s)", current_class.size());
+    ImGui::SameLine();
+
+    // Bouton de tri : NOM
+    const char* arrow_last = (m_sort_mode == Sort_Lastname) ? (m_sort_asc ? " ^" : " v") : "";
+    std::string label_last = std::string("Nom") + arrow_last;
+    
+    if (ImGui::SmallButton(label_last.c_str())) {
+        if (m_sort_mode == Sort_Lastname) {
+            m_sort_asc = !m_sort_asc; // Inverser le sens si déjà cliqué
+        } else {
+            m_sort_mode = Sort_Lastname;
+            m_sort_asc = true; // Par défaut, croissant (A-Z)
+        }
+        current_class.sort_by_lastname(m_sort_asc);
+    }
+
+    ImGui::SameLine();
+
+    // Bouton de tri : PRÉNOM
+    const char* arrow_first = (m_sort_mode == Sort_Firstname) ? (m_sort_asc ? " ^" : " v") : "";
+    std::string label_first = std::string("Prénom") + arrow_first;
+    
+    if (ImGui::SmallButton(label_first.c_str())) {
+        if (m_sort_mode == Sort_Firstname) {
+            m_sort_asc = !m_sort_asc;
+        } else {
+            m_sort_mode = Sort_Firstname;
+            m_sort_asc = true;
+        }
+        current_class.sort_by_firstname(m_sort_asc);
+    }
+
+
+    // --- COLONNE 2 : Les Points ---
+    ImGui::TableNextColumn();
+    
+    const char* arrow_pts = (m_sort_mode == Sort_Points) ? (m_sort_asc ? " ^" : " v") : "";
+    std::string label_pts = std::string("Points") + arrow_pts;
+    
+    if (ImGui::SmallButton(label_pts.c_str())) {
+        if (m_sort_mode == Sort_Points) {
+            m_sort_asc = !m_sort_asc;
+        } else {
+            m_sort_mode = Sort_Points;
+            m_sort_asc = false; // UX : Pour les points, on veut souvent les meilleurs en premier (décroissant) par défaut !
+        }
+        current_class.sort_by_points(m_sort_asc);
+    }
 }
 
 void StudentRanking::draw_students_info(int class_idx) {
