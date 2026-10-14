@@ -121,12 +121,11 @@ void StudentRanking::draw_class_selector() {
     ImGui::Separator();
     ImGui::Spacing();
 
-    // aspect visuel de confirmation UI (bon pour l'UX ?)
+    // aspect visuel de confirmation UI (bon pour l'UX)
+    ImGui::AlignTextToFramePadding(); // Demande à ImGui d'aligner le texte qui suit avec les éléments cliquables
     ImGui::Text("Classe %s", m_classes.size() == 0 ? "None" : names[m_current_class]);
     ImGui::SameLine();
     ImGui::Checkbox("seuil", &m_highlight_students);
-
-    ImGui::Spacing();
 }
 
 void StudentRanking::draw_classes_header()
