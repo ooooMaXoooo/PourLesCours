@@ -98,6 +98,8 @@ void App::imgui_settings() {
     style.Colors[ImGuiCol_WindowBg] = ImVec4(0.12f, 0.12f, 0.14f, 1.00f);
     style.Colors[ImGuiCol_ChildBg] = ImVec4(0.18f, 0.18f, 0.21f, 1.00f);
 
+    change_font_size();
+
     ImGui_ImplGlfw_InitForOpenGL(m_window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
 }
@@ -112,6 +114,7 @@ void App::update() {
     // Fenêtre ImGui qui couvre toute la fenêtre du système d'exploitation
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(m_io->DisplaySize);
+    change_font_size();
 
     ImGui::Begin("Main", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
@@ -142,6 +145,20 @@ void App::update() {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     glfwSwapBuffers(m_window);
+}
+
+void App::change_font_size() {
+    int width=0, height=0;
+    glfwGetWindowSize(m_window, &width, &height);
+    
+    float scale_factor = min(width / s_BASE_WINDOW_WIDTH, height / s_BASE_WINDOW_HEIGHT);
+    float base_font_size = 17.0f; // La police par défaut d'ImGui fait initialement 13 pixels
+
+    ImFontConfig config;
+    config.SizePixels = base_font_size * scale_factor;
+
+    // Demande à ImGui de charger sa police interne avec cette configuration
+    m_io->Fonts->AddFontDefault(&config);
 }
 
 void App::draw_header() {

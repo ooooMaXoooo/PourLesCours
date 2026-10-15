@@ -45,12 +45,16 @@ private:
     std::vector<const char*> m_features_names;
     std::vector<std::unique_ptr<Feature>> m_features;
 
+    static constexpr int s_BASE_WINDOW_WIDTH = 640;
+    static constexpr int s_BASE_WINDOW_HEIGHT = 480;
+
 private:    
     bool glfw_init(int width, int height);
     void imgui_init();
     void imgui_settings();
 
     void update();
+    void change_font_size();
 
     void draw_header();
     void draw_sidebar();
